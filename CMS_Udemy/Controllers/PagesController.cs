@@ -55,5 +55,35 @@ namespace CMS_Udemy.Controllers
 
             return View(model);
         }
+
+        public ActionResult PagesMenuPartial()
+        {
+            //Declare a list of PageVM
+            List<PageVm> pageVMList;
+
+            //Get all pages except home
+            using(db DB = new db())
+            {
+                pageVMList = DB.Pages.ToArray().OrderBy(x => x.Sorting).Where(x => x.Slug != "home").Select(x => new PageVm(x)).ToList();
+            }
+
+
+            return PartialView(pageVMList);
+        }
+
+        public ActionResult SidebarPartial()
+        {
+            //Declare model
+            SideBarVM model;
+
+            //Init model
+            using(db DB = new db())
+            {
+                SideBarDTO dto = DB.SideBar.Find(1);
+                model = new SideBarVM(dto);
+            }
+
+            return PartialView(model);
+        }
     }
 }

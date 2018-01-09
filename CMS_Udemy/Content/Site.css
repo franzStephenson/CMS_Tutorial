@@ -19,3 +19,22 @@ table.sorting.categories td{
 .ajaxdivtd{
     position:absolute;
 }
+
+span.ajaxmsg{
+    background:green;
+    color:#ffffff;
+    padding:10px;
+    display:none;
+    position:absolute;
+    bottom:0;
+    margin-left:10px;
+}
+
+span.loader{
+    display:none;
+}
+
+.ajaxcart{
+    position:relative;
+    top:5px;
+}
