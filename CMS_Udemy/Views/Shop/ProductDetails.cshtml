@@ -17,7 +17,7 @@
         $@Html.DisplayFor(model => model.Price)
         <br />
         <div class="addtocart">
-            <a href="#">Add To Cart</a>
+            <a href="#" class="addtocart">Add To Cart</a>
             <span class="loader">
                 <img src="~/Content/img/ajax-loader.gif" />
             </span>
@@ -55,6 +55,28 @@
             */
 
             $(".fancybox").fancybox();
+
+
+            /*
+            *Add to cart
+            */
+            $("a.addtocart").click(function (e) {
+                e.preventDefault();
+
+                $("span.loader").addClass("ib");
+                var url = "/cart/AddToCartPartial";
+
+                $.get(url, {id:@Model.ID}, function(data){
+                    $(".ajaxcart").html(data);
+                }).done(function(){
+                    $("span.loader").removeClass("ib");
+                    $("span.ajaxmsg").addClass("ib");
+                    setTimeout(function(){
+                        $("span.ajaxmsg").fadeOut("fast");
+                        $("span.ajaxmsg").removeClass("ib");
+                    }, 1000);
+                });
+            });
         });
     </script>
 }
