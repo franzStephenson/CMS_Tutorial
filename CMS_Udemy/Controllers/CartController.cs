@@ -184,5 +184,22 @@ namespace CMS_Udemy.Controllers
 
            
         }
+
+
+        //GET: /cart/RemoveProduct
+        public void RemoveProduct(int  productid)
+        {
+            //Init cart list
+            List<CartVM> cart = Session["cart"] as List<CartVM>;
+
+            using(db DB = new db())
+            {
+                //get model from list
+                CartVM model = cart.FirstOrDefault(x => x.ProductId == productid);
+
+                //remove model from list
+                cart.Remove(model);
+            }
+        }
     }
 }
