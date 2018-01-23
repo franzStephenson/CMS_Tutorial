@@ -3,6 +3,8 @@ using CMS_Udemy.Models.ViewModels.Cart;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Mail;
 using System.Web;
 using System.Web.Mvc;
 
@@ -200,6 +202,76 @@ namespace CMS_Udemy.Controllers
                 //remove model from list
                 cart.Remove(model);
             }
+        }
+
+        public ActionResult PaypalPartial()
+        {
+            List<CartVM> cart = Session["cart"] as List<CartVM>;
+
+            return PartialView(cart);
+        }
+
+        //POST: /cart/PlaceOrder
+        [HttpPost]
+        public void PlaceOrder()
+        {
+
+            //Get cart list
+            List<CartVM> cart = Session["cart"] as List<CartVM>;
+
+            //Get username
+            string username = User.Identity.Name;
+
+            //Init OrderId
+            int orderId = 0;
+
+            using (db DB = new db())
+            {
+
+                //Init OrderId
+                OrderDTO orderDTO = new OrderDTO();
+
+                //Get user id
+                var q = DB.Users.FirstOrDefault(x => x.UserName == username);
+                int userId = q.Id;
+
+                //Add to OrderDTO and save
+                orderDTO.UserId = userId;
+                orderDTO.CreatedAt = DateTime.Now;
+
+                DB.Orders.Add(orderDTO);
+                DB.SaveChanges();
+
+                //Get inserted id
+                orderId = orderDTO.OrderId;
+
+                //Init OrderDetails
+                OrderDetailsDTO orderdetailsDTO = new OrderDetailsDTO();
+
+                //Add to orderdetailsdto
+                foreach(var item in cart)
+                {
+                    orderdetailsDTO.OrderId = orderId;
+                    orderdetailsDTO.UserId = userId;
+                    orderdetailsDTO.ProductId = item.ProductId;
+                    orderdetailsDTO.Quantity = item.Quantity;
+
+                    DB.OrderDetails.Add(orderdetailsDTO);
+                    DB.SaveChanges();
+                }
+
+            }
+
+            //email admin
+            var client = new SmtpClient("smtp.mailtrap.io", 2525)
+            {
+                Credentials = new NetworkCredential("007b203c8beab5", "e0e00e51297f7e"),
+                EnableSsl = true
+            };
+            client.Send("admin@example.com", "admin@example.com", "New Order", "You have a new order " + orderId);
+
+            //Reset Session
+            Session["cart"] = null;
         }
     }
 }

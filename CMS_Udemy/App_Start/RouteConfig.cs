@@ -13,6 +13,7 @@ namespace CMS_Udemy
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
+            routes.MapRoute("Account", "Account/{action}/{id}", new { Controller = "Account", action = "Index", id = UrlParameter.Optional }, new[] { "CMS_Udemy.Controllers" });
             routes.MapRoute("Cart", "Cart/{action}/{id}", new { Controller = "Cart", action = "Index", id = UrlParameter.Optional }, new[] { "CMS_Udemy.Controllers" });
             routes.MapRoute("Shop", "Shop/{action}/{name}", new { Controller = "Shop", action = "Index", name = UrlParameter.Optional }, new[] { "CMS_Udemy.Controllers" });
             routes.MapRoute("SidebarPartial", "Pages/SidebarPartial", new { Controller = "Pages", action = "SidebarPartial" }, new[] { "CMS_Udemy.Controllers" });
